@@ -28,19 +28,25 @@ impl EventSystem for EventClock {
         if let Ok(Ok(Ok(mut current_clock))) = current_clock {
             current_clock.as_mut().update();
         }
-        // Get ClockRegistry, ActiveClockRegistry
-        // Find all new Active
-        // Insert into ActiveClockRegistry (with Latest)
-        
-        // Get TimerRegistry
-        // Find all in Window from ActiveClockRegistry
-        // Remove Expired from TimerRegistry
-        // Insert into TimerRegistry
 
-        // For each Timer
-        // If Elapsed then spawn Alert
-        // 
+        let new_active_clocks = match get_clock_registry(program_registry) {
+            Ok(Ok(Ok(clock_registry))) => {
+                // find all new active clocks                
+            },
+            _ => None
+        };
 
+        match get_active_clock_registry(program_registry) {
+            Ok(Ok(Ok(active_clock_registry))) => {
+                // insert new active clocks
+                // // return all active clocks with Alive
+                // only retain those that are alive
+                // and for each
+                // if elapsed then spawn alert
+
+            },
+            _ => ()
+        };
 
         event_buffer
     }
