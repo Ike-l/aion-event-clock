@@ -15,4 +15,12 @@ impl Tick {
     pub fn checked_add(&self, rhs: &Self) -> Option<Self> {
         self.accumulator.checked_add(rhs.accumulator).map(|tick| Self { accumulator: tick })
     }
+
+    pub fn checked_sub(&self, rhs: &Self) -> Option<Self> {
+        self.accumulator.checked_sub(rhs.accumulator).map(|tick| Self { accumulator: tick })
+    }
+
+    pub fn rem_euclid(&self, rhs: &Self) -> Self {
+        Self { accumulator: self.accumulator.rem_euclid(rhs.accumulator) }
+    }
 }
