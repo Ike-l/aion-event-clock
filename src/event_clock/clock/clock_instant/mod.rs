@@ -1,6 +1,7 @@
 use crate::prelude::{Tick, ClockDuration};
 use std::time::Instant;
 
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub enum ClockInstant {
     Tick(Tick),
     Time(Instant)

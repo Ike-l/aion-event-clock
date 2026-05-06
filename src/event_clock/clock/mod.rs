@@ -8,6 +8,7 @@ pub mod clock_interval;
 pub mod clock_duration;
 pub mod clock_finish;
 
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub struct Clock {
     // If None then is always active
     pub condition: Option<Event>,
@@ -25,7 +26,7 @@ pub struct Clock {
     pub alert: Option<Event>,
 
     // If None doesnt replaceBut
-    pub setup_next_interval: Option<Box<dyn FnMut(Option<ClockInterval>) -> Option<Option<ClockInterval>> >>
+    // pub setup_next_interval: Option<Box<dyn FnMut(Option<ClockInterval>) -> Option<Option<ClockInterval>> >>
 }
 
 impl Clock {

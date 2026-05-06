@@ -1,4 +1,4 @@
-#[derive(Default, PartialEq, PartialOrd)]
+#[derive(Default, PartialEq, Eq, Hash, PartialOrd, Clone)]
 pub struct Tick {
     accumulator: usize
 }

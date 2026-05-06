@@ -2,15 +2,17 @@
 // Event History
 // Can check with Event History
 
-use std::{sync::Arc};
+use std::{collections::HashSet, sync::Arc};
 
 use aion_event::prelude::{EventBuffer, EventHistory, EventSystem};
 use aion_program::prelude::ProgramRegistry;
 
-use crate::prelude::{get_mut_current_clock};
+use crate::prelude::{get_mut_current_clock, get_clock_registry};
 
 pub mod clock;
 pub mod clock_capture;
+pub mod active_clock_registry;
+pub mod clock_registry;
 
 // When (Tick - Start) % Interval == Stage 
 // Only spawn an alert when the timer has elapsed (not at start like while)
@@ -31,12 +33,12 @@ impl EventSystem for EventClock {
 
         let new_active_clocks = match get_clock_registry(program_registry) {
             Ok(Ok(Ok(clock_registry))) => {
-                // find all new active clocks                
+                Some(clock_registry.as_ref().iter().filter(|clock| clock.triggered(current_events)).cloned().collect::<HashSet<_>>())
             },
             _ => None
         };
 
-        match get_active_clock_registry(program_registry) {
+        match get_mut_active_clock_registry(program_registry) {
             Ok(Ok(Ok(active_clock_registry))) => {
                 // insert new active clocks
                 // with "birth" being current_clock cloned and interval_count as 0
