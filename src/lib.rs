@@ -12,7 +12,10 @@ pub mod prelude {
                 ACTIVE_CLOCK_REGISTRY_RESOURCE_ID,
                 ACTIVE_CLOCK_REGISTRY_ACCESS_BUILDER,
                 ActiveClockRegistry,
-                get_mut_active_clock_registry
+                get_mut_active_clock_registry,
+                active_clock::{
+                    ActiveClock
+                }
             },
             clock_registry::{
                 CLOCK_REGISTRY_ACCESS_BUILDER,
