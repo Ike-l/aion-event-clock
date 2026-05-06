@@ -1,14 +1,31 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+pub mod event_clock;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+pub mod prelude {
+    pub use super::{
+        event_clock::{
+            EventClock,
+            current_clock::{
+                CurrentClock,
+                get_mut_current_clock
+            },
+            clock::{
+                Clock,
+                tick::{
+                    Tick
+                },
+                clock_duration::{
+                    ClockDuration
+                },
+                clock_finish::{
+                    ClockFinish
+                },
+                clock_instant::{
+                    ClockInstant
+                },
+                clock_interval::{
+                    ClockInterval
+                }
+            }
+        }
+    };
 }
