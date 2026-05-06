@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use aion_event::prelude::{Event, EventBuffer};
 
 use crate::prelude::{ClockFinish, ClockInstant, ClockInterval, ClockCapture, Tick};
@@ -24,6 +26,7 @@ pub struct Clock {
     pub interval: Option<ClockInterval>,
 
     pub alert: Option<Event>,
+    pub final_alert: Option<Event>,
 
     // If None doesnt replaceBut
     // pub setup_next_interval: Option<Box<dyn FnMut(Option<ClockInterval>) -> Option<Option<ClockInterval>> >>
@@ -59,5 +62,12 @@ impl Clock {
 
     pub fn alive(&self, current_clock: &ClockCapture, interval_count: &Tick, birth: &ClockCapture) -> bool {
         self.started(current_clock) && !self.finished(current_clock, interval_count, birth)        
+    }
+
+    pub fn elapsed(&self, current_clock: &ClockCapture, birth: &ClockCapture, last_checked_time: &Instant) -> bool {
+        match &self.interval {
+            Some(clock_interval) => clock_interval.elapsed(&self.start, current_clock, birth, last_checked_time),
+            None => true,
+        }
     }
 }
