@@ -4,8 +4,8 @@ pub mod prelude {
     pub use super::{
         event_clock::{
             EventClock,
-            current_clock::{
-                CurrentClock,
+            clock_capture::{
+                ClockCapture,
                 get_mut_current_clock
             },
             clock::{

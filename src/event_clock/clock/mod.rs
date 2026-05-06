@@ -1,6 +1,6 @@
 use aion_event::prelude::{Event, EventBuffer};
 
-use crate::prelude::{ClockFinish, ClockInstant, ClockInterval, CurrentClock, Tick};
+use crate::prelude::{ClockFinish, ClockInstant, ClockInterval, ClockCapture, Tick};
 
 pub mod tick;
 pub mod clock_instant;
@@ -36,14 +36,14 @@ impl Clock {
         }
     }
 
-    pub fn started(&self, current_clock: &CurrentClock) -> bool {
+    pub fn started(&self, current_clock: &ClockCapture) -> bool {
         match &self.start {
             Some(start) => current_clock.is_after(start),
             None => true,
         }
     }
 
-    pub fn finished(&self, current_clock: &CurrentClock, interval_count: &Tick, birth: &CurrentClock) -> bool {
+    pub fn finished(&self, current_clock: &ClockCapture, interval_count: &Tick, birth: &ClockCapture) -> bool {
         match &self.finish {
             Some(finish) => {
                 match finish {
@@ -56,7 +56,7 @@ impl Clock {
         }
     }
 
-    pub fn alive(&self, current_clock: &CurrentClock, interval_count: &Tick, birth: &CurrentClock) -> bool {
+    pub fn alive(&self, current_clock: &ClockCapture, interval_count: &Tick, birth: &ClockCapture) -> bool {
         self.started(current_clock) && !self.finished(current_clock, interval_count, birth)        
     }
 }
