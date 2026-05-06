@@ -4,6 +4,7 @@ use aion_processor::prelude::{Unique};
 use aion_program::prelude::{ProgramRegistryResolveWithInsert, ProgramRegistryReplaceResourceError, ResolveResourceError, AccessSubmissionError, ResourceId, Resource, AccessBuilder, ProgramRegistry};
 use crate::prelude::{Tick, ClockInstant, ClockDuration};
 
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub struct ClockCapture {
     ticks: Tick,
     time: Instant,
@@ -16,6 +17,14 @@ impl Default for ClockCapture {
 }
 
 impl ClockCapture {
+    pub fn ticks(&self) -> &Tick {
+        &self.ticks
+    }
+
+    pub fn time(&self) -> &Instant {
+        &self.time
+    }
+
     pub fn update(&mut self) -> Option<(Tick, Instant)> {
         let old_tick = self.ticks.increment()?;
         let old_time = self.time;
