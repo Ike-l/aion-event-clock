@@ -1,8 +1,8 @@
-use crate::prelude::{Tick};
 use std::{sync::Arc, time::Instant};
 
 use aion_processor::prelude::{Unique};
 use aion_program::prelude::{ProgramRegistryResolveWithInsert, ProgramRegistryReplaceResourceError, ResolveResourceError, AccessSubmissionError, ResourceId, Resource, AccessBuilder, ProgramRegistry};
+use crate::prelude::{Tick, ClockInstant, ClockDuration};
 
 pub struct CurrentClock {
     ticks: Tick,
@@ -23,6 +23,52 @@ impl CurrentClock {
         self.time = Instant::now();
 
         Some((old_tick, old_time))
+    }
+
+    pub fn is_before(&self, clock_instant: &ClockInstant) -> bool {
+        match clock_instant {
+            ClockInstant::Tick(tick) => self.ticks < *tick,
+            ClockInstant::Time(instant) => self.time.checked_duration_since(*instant).is_none(),
+        }
+    }
+
+    pub fn is_after(&self, clock_instant: &ClockInstant) -> bool {
+        match clock_instant {
+            ClockInstant::Tick(tick) => self.ticks > *tick ,
+            ClockInstant::Time(instant) => self.time.checked_duration_since(*instant).is_some_and(|duration| !duration.is_zero()),
+        }
+    }
+
+    pub fn since_is_greater(&self, start: &Self, duration: &ClockDuration) -> bool {
+        match duration {
+            ClockDuration::Duration(duration) => {
+                let lifetime = self.time.checked_duration_since(start.time);
+                if let Some(lifetime) = lifetime {
+                    lifetime > *duration
+                } else {
+                    false
+                }
+            },
+            ClockDuration::Tick(tick) => {
+                let expected_finish = start.ticks.checked_add(tick);
+                if let Some(expected_finish) = expected_finish {
+                    self.ticks > expected_finish
+                } else {
+                    false
+                }
+            },
+        }
+
+        // duration since start is greater than duration
+
+        // birth + clock_duration < current_clock
+        // match finish_time {
+        //     Some(Some(finish_time)) => current_clock.is_after(&finish_time),
+        //     // If unable to compute the expected finish time say its not finished
+        //     // - since somewhere else will catch it when it does actually reach the maximum value
+        //     Some(None) => false,
+        // }
+        // if start + duration is after self
     }
 }
 
