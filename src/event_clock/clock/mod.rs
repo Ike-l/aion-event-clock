@@ -1,6 +1,6 @@
-use aion_event::prelude::Event;
+use aion_event::prelude::{Event, EventBuffer};
 
-use crate::prelude::{ClockInstant, ClockFinish, ClockInterval};
+use crate::prelude::{ClockFinish, ClockInstant, ClockInterval, CurrentClock, Tick};
 
 pub mod tick;
 pub mod clock_instant;
@@ -26,4 +26,37 @@ pub struct Clock {
 
     // If None doesnt replaceBut
     pub setup_next_interval: Option<Box<dyn FnMut(Option<ClockInterval>) -> Option<Option<ClockInterval>> >>
+}
+
+impl Clock {
+    pub fn triggered(&self, current_events: &EventBuffer) -> bool {
+        match &self.condition {
+            Some(condition) => current_events.contains(condition),
+            None => true,
+        }
+    }
+
+    pub fn started(&self, current_clock: &CurrentClock) -> bool {
+        match &self.start {
+            Some(start) => current_clock.is_after(start),
+            None => true,
+        }
+    }
+
+    pub fn finished(&self, current_clock: &CurrentClock, interval_count: &Tick, birth: &CurrentClock) -> bool {
+        match &self.finish {
+            Some(finish) => {
+                match finish {
+                    ClockFinish::ClockInstant(clock_instant) => current_clock.is_before(clock_instant),
+                    ClockFinish::IntervalLimit(limit) => interval_count > limit,
+                    ClockFinish::TTL(clock_duration) => current_clock.since_is_greater(birth, clock_duration),
+                }
+            },
+            None => false,
+        }
+    }
+
+    pub fn alive(&self, current_clock: &CurrentClock, interval_count: &Tick, birth: &CurrentClock) -> bool {
+        self.started(current_clock) && !self.finished(current_clock, interval_count, birth)        
+    }
 }
