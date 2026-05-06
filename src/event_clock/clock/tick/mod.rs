@@ -20,7 +20,11 @@ impl Tick {
         self.accumulator.checked_sub(rhs.accumulator).map(|tick| Self { accumulator: tick })
     }
 
-    pub fn rem_euclid(&self, rhs: &Self) -> Self {
-        Self { accumulator: self.accumulator.rem_euclid(rhs.accumulator) }
+    pub fn rem_euclid(&self, rhs: &Self) -> Option<Self> {
+        if rhs.accumulator == 0 {
+            return None;
+        }
+        
+        Some(Self { accumulator: self.accumulator.rem_euclid(rhs.accumulator) })
     }
 }
