@@ -7,7 +7,7 @@ use std::{collections::HashSet, sync::Arc};
 use aion_event::prelude::{EventBuffer, EventHistory, EventSystem};
 use aion_program::prelude::ProgramRegistry;
 
-use crate::prelude::{get_mut_current_clock, get_clock_registry};
+use crate::prelude::{get_mut_current_clock, get_clock_registry, get_mut_active_clock_registry};
 
 pub mod clock;
 pub mod clock_capture;
@@ -22,7 +22,7 @@ impl EventSystem for EventClock {
     fn execute(
         program_registry: &Arc<ProgramRegistry>, 
         current_events: &EventBuffer,
-        event_histry: &EventHistory,
+        _event_history: &EventHistory,
     ) -> EventBuffer {
         let mut event_buffer = EventBuffer::default();
 
