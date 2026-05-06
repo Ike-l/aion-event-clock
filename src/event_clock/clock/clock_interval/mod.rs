@@ -1,6 +1,6 @@
 use std::time::Instant;
 
-use crate::prelude::{Tick, ClockDuration, ClockInstant, ClockCapture, };
+use crate::prelude::{ClockDuration, ClockInstant, ClockCapture, };
 
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct ClockInterval {
