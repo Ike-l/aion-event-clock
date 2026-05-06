@@ -8,6 +8,12 @@ pub mod prelude {
                 ClockCapture,
                 get_mut_current_clock
             },
+            clock_registry::{
+                CLOCK_REGISTRY_ACCESS_BUILDER,
+                CLOCK_REGISTRY_RESOURCE_ID,
+                ClockRegistry,
+                get_clock_registry
+            },
             clock::{
                 Clock,
                 tick::{
