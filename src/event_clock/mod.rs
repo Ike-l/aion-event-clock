@@ -7,11 +7,11 @@ use std::{collections::HashSet, sync::Arc};
 use aion_event::prelude::{EventBuffer, EventHistory, EventSystem};
 use aion_program::prelude::ProgramRegistry;
 
-use crate::prelude::{ActiveClock, get_mut_current_clock, get_clock_registry, get_mut_active_clock_registry};
+use crate::prelude::{Timer, get_mut_current_clock, get_clock_registry, get_mut_timer_registry};
 
 pub mod clock;
 pub mod clock_capture;
-pub mod active_clock_registry;
+pub mod timer_registry;
 pub mod clock_registry;
 
 pub struct EventClock;
@@ -38,23 +38,23 @@ impl EventSystem for EventClock {
             _ => None
         };
 
-        match get_mut_active_clock_registry(program_registry) {
-            Ok(Ok(Ok(mut active_clock_registry))) => {
-                let active_clock_registry = active_clock_registry.as_mut();
+        match get_mut_timer_registry(program_registry) {
+            Ok(Ok(Ok(mut timer_registry))) => {
+                let timer_registry = timer_registry.as_mut();
 
                 let mut continuing_clocks = HashSet::new();
 
-                for mut active_clock in active_clock_registry.drain() {
-                    if active_clock.alive(current_clock) {
-                        if active_clock.elapsed(current_clock) {
-                            if let Some(alert) = active_clock.alert() {
+                for mut timer in timer_registry.drain() {
+                    if timer.alive(current_clock) {
+                        if timer.elapsed(current_clock) {
+                            if let Some(alert) = timer.alert() {
                                 event_buffer.insert(alert.clone());
                             }
                         }
     
-                        continuing_clocks.insert(active_clock);
+                        continuing_clocks.insert(timer);
                     } else {
-                        if let Some(final_alert) = active_clock.final_alert() {
+                        if let Some(final_alert) = timer.final_alert() {
                             event_buffer.insert(final_alert.clone());
                         }
                     }
@@ -62,10 +62,10 @@ impl EventSystem for EventClock {
 
                 // Adds later because we know if they have just been added then they can't have elapsed
                 if let Some(triggered_clocks) = triggered_clocks {
-                    active_clock_registry.extend(triggered_clocks.into_iter().map(|triggered_clock| ActiveClock::new(triggered_clock, current_clock.clone())));
+                    timer_registry.extend(triggered_clocks.into_iter().map(|triggered_clock| Timer::new(triggered_clock, current_clock.clone())));
                 }
 
-                active_clock_registry.extend(continuing_clocks);
+                timer_registry.extend(continuing_clocks);
             },
             _ => ()
         };

@@ -5,14 +5,14 @@ use crate::prelude::{Tick, Clock, ClockCapture};
 use aion_event::prelude::Event;
 
 #[derive(PartialEq, Eq, Hash)]
-pub struct ActiveClock {
+pub struct Timer {
     clock: Clock,
     interval_count: Tick,
     birth: ClockCapture,
     last_checked_time: Instant,
 }
 
-impl ActiveClock {
+impl Timer {
     pub fn new(clock: Clock, birth: ClockCapture) -> Self {
         Self { 
             clock, 

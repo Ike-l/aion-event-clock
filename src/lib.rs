@@ -8,13 +8,13 @@ pub mod prelude {
                 ClockCapture,
                 get_mut_current_clock
             },
-            active_clock_registry::{
-                ACTIVE_CLOCK_REGISTRY_RESOURCE_ID,
-                ACTIVE_CLOCK_REGISTRY_ACCESS_BUILDER,
-                ActiveClockRegistry,
-                get_mut_active_clock_registry,
-                active_clock::{
-                    ActiveClock
+            timer_registry::{
+                TIMER_REGISTRY_RESOURCE_ID,
+                TIMER_REGISTRY_ACCESS_BUILDER,
+                TimerRegistry,
+                get_mut_timer_registry,
+                timer::{
+                    Timer
                 }
             },
             clock_registry::{
