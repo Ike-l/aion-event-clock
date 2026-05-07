@@ -31,6 +31,6 @@ pub fn get_clock_registry<'a>(
             resource_id: Some(CLOCK_REGISTRY_RESOURCE_ID), 
             ..Default::default()
         }
-    // is only ever None if resource_id is None
+    // is only ever None if resource_id or resource is None
     ).unwrap()
 }

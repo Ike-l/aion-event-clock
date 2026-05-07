@@ -33,6 +33,6 @@ pub fn get_mut_timer_registry<'a>(
             resource_id: Some(TIMER_REGISTRY_RESOURCE_ID), 
             ..Default::default()
         }
-    // is only ever None if resource_id is None
+    // is only ever None if resource_id or resource is None
     ).unwrap()
 }
