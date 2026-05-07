@@ -14,7 +14,7 @@ pub type TimerRegistry = HashSet<Timer>;
 
 pub const TIMER_REGISTRY_RESOURCE_ID: ResourceId = ResourceId::StaticLabel("EventTimer EventRegistry");
 
-pub const TIMER_REGISTRY_ACCESS_BUILDER: AccessBuilder<'static> = AccessBuilder {
+pub const TIMER_REGISTRY_ACCESS_BUILDER: AccessBuilder = AccessBuilder {
     user_details: None,
     program_id: None,
     program_password: None,

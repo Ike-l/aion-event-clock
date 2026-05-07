@@ -72,7 +72,7 @@ impl ClockCapture {
 
 pub const CURRENT_CLOCK_RESOURCE_ID: ResourceId = ResourceId::StaticLabel("EventClock CurrentClock");
 
-pub const CURRENT_CLOCK_ACCESS_BUILDER: AccessBuilder<'static> = AccessBuilder {
+pub const CURRENT_CLOCK_ACCESS_BUILDER: AccessBuilder = AccessBuilder {
     user_details: None,
     program_id: None,
     program_password: None,

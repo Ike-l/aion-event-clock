@@ -12,7 +12,7 @@ pub type ClockRegistry = HashSet<Clock>;
 
 pub const CLOCK_REGISTRY_RESOURCE_ID: ResourceId = ResourceId::StaticLabel("EventClock EventRegistry");
 
-pub const CLOCK_REGISTRY_ACCESS_BUILDER: AccessBuilder<'static> = AccessBuilder {
+pub const CLOCK_REGISTRY_ACCESS_BUILDER: AccessBuilder = AccessBuilder {
     user_details: None,
     program_id: None,
     program_password: None,
