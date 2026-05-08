@@ -18,6 +18,7 @@ pub struct EventClock;
 
 impl EventSystem for EventClock {
     fn execute(
+        &self,
         program_registry: &Arc<ProgramRegistry>, 
         current_events: &EventBuffer,
         _event_history: &EventHistory,
