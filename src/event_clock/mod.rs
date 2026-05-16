@@ -2,11 +2,11 @@
 // Event History
 // Can check with Event History
 
-use std::{collections::{HashMap, HashSet}, sync::Arc};
+use std::{any::TypeId, collections::{HashMap, HashSet}, sync::Arc};
 
-use aion_ecs::prelude::{Query, UNIQUE_WORLD_ACCESS_BUILDER, WORLD_RESOURCE_ID, World};
+use aion_ecs::prelude::{Query, World};
 use aion_event::prelude::{EventBuffer, EventHistory, EventSystem};
-use aion_program::prelude::{ProgramRegistry, ProgramRegistryResolveWithInsert, Resource, Unique};
+use aion_program::prelude::{ProgramRegistry, ProgramRegistryResolveWithInsert, Resource, ResourceId, Unique};
 use hecs::Entity;
 
 use crate::prelude::{Clock, Timer, get_mut_current_clock};
@@ -35,9 +35,9 @@ impl EventSystem for EventClock {
 
         let mut dead_timers = HashSet::new();
         {
-            let timers = program_registry.resolve::<Query<(Entity, &mut Timer)>>(vec![]);
-            if let Ok(Ok(mut timers)) = timers {
-                for (entity, timer) in timers.borrow().iter() {
+            let timers = program_registry.resolve::<Query<(Entity, &mut Timer)>>(None, vec![]);
+            if let Ok(Ok(timers)) = timers {
+                for (entity, timer) in timers.query().iter() {
                     if timer.alive(current_clock) {
                         if timer.elapsed(current_clock) {
                             if let Some(alert) = timer.alert() {
@@ -56,16 +56,16 @@ impl EventSystem for EventClock {
         }
 
         {
-            let world = program_registry.resolve_with_insert::<Unique<World>>(vec![UNIQUE_WORLD_ACCESS_BUILDER], ProgramRegistryResolveWithInsert {
+            let world = program_registry.resolve_with_insert::<Unique<World>>(None, vec![], ProgramRegistryResolveWithInsert {
                 resource: Some(Box::new(|| Resource::new(World::default()))),
-                resource_id: Some(WORLD_RESOURCE_ID),
+                resource_id: Some(ResourceId::TypeId(TypeId::of::<World>())),
                 ..Default::default()
             }).expect("Resource and ResourceId are Some");
     
             {
                 if let Ok(Ok(Ok(mut world))) = world {
                     for dead_timer in dead_timers {                    
-                        let _ = world.as_mut().remove::<(Timer,)>(dead_timer);
+                        let _ = world.remove::<(Timer,)>(dead_timer);
                     }
                 }
             }
@@ -73,9 +73,9 @@ impl EventSystem for EventClock {
 
         let mut triggered_clocks = HashMap::new();
         {    
-            let clocks = program_registry.resolve::<Query<(Entity, &Clock)>>(vec![]);
-            if let Ok(Ok(mut clocks)) = clocks {
-                for (entity, clock) in clocks.borrow().iter() {
+            let clocks = program_registry.resolve::<Query<(Entity, &Clock)>>(None, vec![]);
+            if let Ok(Ok(clocks)) = clocks {
+                for (entity, clock) in clocks.query().iter() {
                     if clock.triggered(current_events) {
                         triggered_clocks.insert(entity, Timer::new(clock.clone(), current_clock.clone()));
                     }
@@ -84,9 +84,9 @@ impl EventSystem for EventClock {
         }
 
         {
-            let world = program_registry.resolve_with_insert::<Unique<World>>(vec![UNIQUE_WORLD_ACCESS_BUILDER], ProgramRegistryResolveWithInsert {
+            let world = program_registry.resolve_with_insert::<Unique<World>>(None, vec![], ProgramRegistryResolveWithInsert {
                 resource: Some(Box::new(|| Resource::new(World::default()))),
-                resource_id: Some(WORLD_RESOURCE_ID),
+                resource_id: Some(ResourceId::TypeId(TypeId::of::<World>())),
                 ..Default::default()
             }).expect("Resource and ResourceId are Some");
             

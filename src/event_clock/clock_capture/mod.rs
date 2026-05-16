@@ -84,6 +84,7 @@ pub fn get_mut_current_clock<'a>(
     program_registry: &'a Arc<ProgramRegistry>
 ) -> Result<Result<Result<Unique<'a, ClockCapture>, ProgramRegistryReplaceResourceError>, ResolveResourceError>, AccessSubmissionError> {
     program_registry.resolve_with_insert::<Unique<ClockCapture>>(
+        None,
         vec![CURRENT_CLOCK_ACCESS_BUILDER], 
         ProgramRegistryResolveWithInsert { 
             resource: Some(Box::new(|| Resource::new(ClockCapture::default()))), 
